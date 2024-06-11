@@ -20,9 +20,11 @@ public class User {
     private String email;
 
     @Column(name = "user_password")
+    @Setter
     private String password;
 
     @Column(name = "user_nickname")
+    @Setter
     private String nickname;
 
     @Column(name = "user_image")

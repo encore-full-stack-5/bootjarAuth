@@ -1,7 +1,6 @@
 package com.example.bootjarAuth.controller;
 
-import com.example.bootjarAuth.dto.LoginRequest;
-import com.example.bootjarAuth.dto.SignUpRequest;
+import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +25,21 @@ public class AuthController {
         authService.login(loginRequest);
         return ResponseEntity.ok("로그인 성공");
     }
-//
-//    @DeleteMapping("/me")
-//    public ResponseEntity<String> deleteUser(){
-//
-//    }
-//    @GetMapping("/me")
-//    public User getUser(){
-//
-//    }
-//    @PutMapping("/me")
-//    public ResponseEntity<String> updateUser(){
-//
-//    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<String> deleteUser(@RequestBody UserDto userDto){
+        authService.deleteUser(userDto);
+        return ResponseEntity.ok("삭제 성공");
+    }
+    @GetMapping("/me")
+    public UserResponse getUser(@RequestBody UserDto userDto){
+    return authService.getUser(userDto);
+    }
+
+
+    @PutMapping("/me")
+    public ResponseEntity<String> updateUser(@RequestBody UpdateDto updateDto){
+        authService.updateUser(updateDto);
+        return ResponseEntity.ok("수정 성공");
+    }
 }
