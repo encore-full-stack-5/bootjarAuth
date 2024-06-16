@@ -1,13 +1,12 @@
 package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.dto.*;
-import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
 
     void signUp(SignUpRequest signUpRequest);
 
-    void login(LoginRequest loginRequest);
+    LoginResponse login(LoginRequest loginRequest);
 
     UserResponse getUser(UserDto userDto);
 

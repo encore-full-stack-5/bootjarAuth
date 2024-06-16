@@ -2,14 +2,18 @@ spring:
   application:
     name: bootjarAuth
   datasource:
-    url: jdbc:mysql://localhost:3306/bootjar_user
+    url: jdbc:mysql://localhost:3306/users
     username: root
-    password: 1234
+    password: qwer1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  secret: y7w58a$df8g1afdv87yaod89f230r5!@2
+  expiration: 60000
