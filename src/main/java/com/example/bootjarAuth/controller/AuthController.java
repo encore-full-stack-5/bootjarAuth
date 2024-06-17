@@ -24,6 +24,7 @@ public class AuthController {
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
         authService.login(loginRequest);
         return ResponseEntity.ok("로그인 성공");
+
     }
 
     @DeleteMapping("/me")
