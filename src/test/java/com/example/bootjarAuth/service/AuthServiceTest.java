@@ -2,9 +2,9 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.LoginRequest;
-import com.example.bootjarAuth.dto.LoginResponse;
-import com.example.bootjarAuth.dto.SignUpRequest;
+import com.example.bootjarAuth.dto.Request.LoginRequest;
+import com.example.bootjarAuth.dto.Request.SignUpRequest;
+import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Nested;
@@ -137,28 +137,3 @@ class AuthServiceTest {
         assertThat(exception.getMessage()).isEqualTo("Email 혹은 비밀번호가 틀렸습니다.");
     }
 }
-
-
-
-
-
-//    @Nested
-//    @Transactional
-//    class 로그인 {
-//        @Test
-//        void 성공 () {
-//            // given
-//            User user = User.builder()
-//                    .email("test@gmail.com")
-//                    .nickname("test")
-//                    .password(passwordEncoder.encode("test1234!@#$"))
-//                    .publicScope(false)
-//                    .build();
-//            authRepository.save(user);
-//            LoginRequest request = new LoginRequest("test@gmail.com", "test1234!@#$");
-//            // when
-//            LoginResponse response = authService.login(request);
-//            // then
-//            assertNotNull(response.token());
-//        }
-//    }

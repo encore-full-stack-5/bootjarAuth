@@ -27,35 +27,21 @@ public class JwtUtil {
     public String generateToken(String email){
         return Jwts.builder()
                 .subject(email)
+                .claim("email", email)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
     }
+    public String getByEmailFromTokenAndValidate(String token){
+        Claims payload = (Claims) Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parse(token)
+                .getPayload();
+        return payload.getSubject();
+    }
 
-//    public String generateToken(String email){
-//        String token = Jwts.builder()
-//                .subject(email)
-//                .expiration(new Date(System.currentTimeMillis() + expiration))
-//                .signWith(secretKey)
-//                .compact();
-//        return token;
-//    }
-//
-//    public String getByEmailFromTokenAndValidate(String token){
-//        Claims payload = (Claims) Jwts.parser()
-//                .verifyWith(secretKey)
-//                .build()
-//                .parse(token)
-//                .getPayload();
-//        return payload.getSubject();
-//    }
-//
-//
-//    public JwtUtil(
-//            @Value("${jwt.secret}") String secret,
-//            @Value("${jwt.expiration}") Long expiration
-//    ) {
-//        this.expiration = expiration;
-//        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+//    private Claims extractClaims(String token) {
+//        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
 //    }
 }

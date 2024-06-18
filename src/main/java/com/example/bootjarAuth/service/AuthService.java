@@ -1,6 +1,11 @@
 package com.example.bootjarAuth.service;
 
+import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.*;
+import com.example.bootjarAuth.dto.Request.LoginRequest;
+import com.example.bootjarAuth.dto.Request.SignUpRequest;
+import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.UserResponse;
 
 public interface AuthService {
 
@@ -8,7 +13,7 @@ public interface AuthService {
 
     LoginResponse login(LoginRequest loginRequest);
 
-    UserResponse getUser(UserDto userDto);
+    UserResponse getUser(String token);
 
     void deleteUser(UserDto userDto);
 

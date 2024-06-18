@@ -1,9 +1,16 @@
 package com.example.bootjarAuth.controller;
 
+import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.*;
+import com.example.bootjarAuth.dto.Request.LoginRequest;
+import com.example.bootjarAuth.dto.Request.SignUpRequest;
+import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +28,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
-        authService.login(loginRequest);
-        return ResponseEntity.ok("로그인 성공");
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
 
     }
 
@@ -33,8 +39,9 @@ public class AuthController {
         return ResponseEntity.ok("삭제 성공");
     }
     @GetMapping("/me")
-    public UserResponse getUser(@RequestBody UserDto userDto){
-    return authService.getUser(userDto);
+        public UserResponse getUser(@RequestHeader("Authorization") String token){
+        String bearerToken = token.substring(7);
+        return authService.getUser(bearerToken);
     }
 
 

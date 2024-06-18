@@ -1,4 +1,4 @@
-package com.example.bootjarAuth.dto;
+package com.example.bootjarAuth.dto.Response;
 
 import com.example.bootjarAuth.domain.User;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,6 @@ public class UserResponse {
     private String email;
     private String nickname;
     private Boolean userPublicScope;
-
-
 
     public static UserResponse from(User user){
       return UserResponse.builder()
