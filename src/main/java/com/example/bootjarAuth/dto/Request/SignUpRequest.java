@@ -1,4 +1,4 @@
-package com.example.bootjarAuth.dto;
+package com.example.bootjarAuth.dto.Request;
 
 import com.example.bootjarAuth.domain.User;
 import jakarta.validation.constraints.Email;
@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @AllArgsConstructor

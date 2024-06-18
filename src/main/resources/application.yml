@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/users
     username: root
-    password: qwer1234
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -16,4 +16,4 @@ spring:
 
 jwt:
   secret: y7w58a$df8g1afdv87yaod89f230r5!@2
-  expiration: 60000
+  expiration: 6000000000000

@@ -1,7 +1,7 @@
 package com.example.bootjarAuth.global.config;
 
+import com.example.bootjarAuth.global.utils.JwtAuthenticationFilter;
 import com.example.bootjarAuth.global.utils.JwtUtil;
-import com.example.bootjarAuth.global.utils.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +22,8 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
-    private final AuthenticationConfiguration authenticationConfiguration;
     //JwtUtil 주입
-    private final JwtUtil jwtUtil;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -50,37 +48,14 @@ public class SecurityConfig {
             return corsConfiguration;
         }));
         http.authorizeHttpRequests(auth ->
-                auth.requestMatchers("/users/login", "/users/signup")
+                auth.requestMatchers("/users/login", "/users/me", "/users/signup")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
         );
-        //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
-        http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
-//    private final UserDetailsService authService;
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-//        http.csrf(AbstractHttpConfigurer::disable);
-//        http.cors(c-> c.configurationSource(request -> {
-//            var corsConfiguration = new CorsConfiguration();
-//            corsConfiguration.addAllowedHeader("*");
-//            corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));
-//            corsConfiguration.setAllowedOrigins(List.of("*"));
-//            return corsConfiguration;
-//        }));
-//        http.userDetailsService(authService);
-//
-//        http.authorizeHttpRequests(req->
-//                req.requestMatchers("/users/signup", "/users/login")
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated()
-//        );
-//        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
 }

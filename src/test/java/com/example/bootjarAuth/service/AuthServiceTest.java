@@ -2,8 +2,8 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.LoginRequest;
-import com.example.bootjarAuth.dto.LoginResponse;
+import com.example.bootjarAuth.dto.Request.LoginRequest;
+import com.example.bootjarAuth.dto.Response.LoginResponse;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

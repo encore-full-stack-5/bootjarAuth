@@ -1,4 +1,4 @@
-package com.example.bootjarAuth.dto;
+package com.example.bootjarAuth.dto.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
