@@ -24,9 +24,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
+        //이메일 중복 제한
+        if(authRepository.existsByEmail(signUpRequest.getEmail()))
+            throw new IllegalArgumentException("중복된 이메일입니다.");
+        //닉네임 중복 제한
+        if(authRepository.existsByNickname(signUpRequest.getNickname()))
+            throw new IllegalArgumentException("중복된 닉네임입니다.");
+
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
-        User user = signUpRequest.toEntity(encodedPassword);
-        authRepository.save(user);
+        authRepository.save(signUpRequest.toEntity(encodedPassword));
     }
 
     @Override
@@ -66,9 +72,9 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public void updateUser(UpdateDto updateDto) {
-     User user =  authRepository.findById(updateDto.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당하는 회원이 없습니다"));
+        User user =  authRepository.findById(updateDto.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당하는 회원이 없습니다"));
 
-     user.setNickname(updateDto.getNickname());
-     user.setPassword(updateDto.getPassword());
+        user.setNickname(updateDto.getNickname());
+        user.setPassword(updateDto.getPassword());
     }
 }
