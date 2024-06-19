@@ -13,6 +13,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ${location}
+      project-id: ${project-id}
+      bucket: ${bucketName}
+
 
 jwt:
   # kube 할 때 env에 넣어서 실행하기

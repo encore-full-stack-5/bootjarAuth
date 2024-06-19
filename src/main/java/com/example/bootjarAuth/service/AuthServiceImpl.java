@@ -13,12 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final GcsService gcsService;
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
@@ -69,10 +72,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public void updateUser(UpdateDto updateDto) {
-        User user =  authRepository.findById(updateDto.getUserId()).orElseThrow(()-> new IllegalArgumentException("해당하는 회원이 없습니다"));
+    public void updateUser(String token, UpdateDto updateDto) throws IOException {
+
+        User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
+        if(user == null) throw  new IllegalArgumentException("해당하는 회원이 없습니다");
+
+        String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
+
 
         user.setNickname(updateDto.getNickname());
-        user.setPassword(updateDto.getPassword());
+        if (updateDto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+        }
+        user.setImage(imageUrl);
+
     }
 }

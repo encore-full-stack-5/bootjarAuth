@@ -33,6 +33,7 @@ public class User implements UserDetails {
     private String nickname;
 
     @Column(name = "user_image")
+    @Setter
     private String image;
 
     @Column(name = "user_public_scope", columnDefinition = "BOOLEAN DEFAULT TRUE")
@@ -48,3 +49,4 @@ public class User implements UserDetails {
         return email;
     }
 }
+
