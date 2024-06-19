@@ -35,8 +35,9 @@ public class AuthController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<String> deleteUser(@RequestBody UserDto userDto){
-        authService.deleteUser(userDto);
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token){
+        String bearerToken = token.substring(7);
+        authService.deleteUser(bearerToken);
         return ResponseEntity.ok("삭제 성공");
     }
     @GetMapping("/me")

@@ -65,9 +65,10 @@ public class AuthServiceImpl implements AuthService {
         return  UserResponse.from(user);
     }
 
+    @Transactional
     @Override
-    public void deleteUser(UserDto userDto) {
-        authRepository.deleteById(userDto.getUserId());
+    public void deleteUser(String token) {
+        authRepository.deleteByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
     }
 
     @Transactional

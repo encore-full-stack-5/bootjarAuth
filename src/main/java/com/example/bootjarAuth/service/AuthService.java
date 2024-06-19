@@ -16,7 +16,7 @@ public interface AuthService {
 
     UserResponse getUser(String token);
 
-    void deleteUser(UserDto userDto);
+    void deleteUser(String token);
 
     void updateUser(String bearerToken, UpdateDto updateDto) throws IOException;
 }
