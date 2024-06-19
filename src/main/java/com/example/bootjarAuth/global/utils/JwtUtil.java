@@ -1,5 +1,7 @@
 package com.example.bootjarAuth.global.utils;
 
+import com.example.bootjarAuth.domain.User;
+import com.example.bootjarAuth.dto.Response.UserResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,10 +26,11 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email){
+    public String generateToken(Long id, String email){
         return Jwts.builder()
                 .subject(email)
                 .claim("email", email)
+                .claim("id", id)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
@@ -40,8 +43,4 @@ public class JwtUtil {
                 .getPayload();
         return payload.getSubject();
     }
-
-//    private Claims extractClaims(String token) {
-//        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-//    }
 }

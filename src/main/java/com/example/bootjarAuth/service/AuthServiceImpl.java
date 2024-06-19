@@ -38,21 +38,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-//        Optional<User> optionalUser = authRepository.findByEmail(loginRequest.getEmail());
-//        if(optionalUser.isEmpty()) throw new IllegalArgumentException("존재하지 않는 Email 입니다.");
-//
-//        User user = optionalUser.get();
-//        if(!user.getPassword().equals(loginRequest.getPassword())) throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
-//
-//        String token = jwtUtil.generateToken(loginRequest.getEmail());
-//        return LoginResponse.from(token);
-
         User byEmail = authRepository.findByEmail(loginRequest.getEmail());
         if(byEmail == null ||
                 !passwordEncoder.matches(loginRequest.getPassword(), byEmail.getPassword()))
             throw new IllegalArgumentException("Email 혹은 비밀번호가 틀렸습니다.");
 
-        String token = jwtUtil.generateToken(loginRequest.getEmail());
+        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail());
         return LoginResponse.from(token);
     }
 
