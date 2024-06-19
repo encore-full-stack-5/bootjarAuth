@@ -3,8 +3,8 @@ spring:
     name: bootjarAuth
   datasource:
     url: jdbc:mysql://localhost:3306/users
-    username: root
-    password: 1234
+    username: ${username}
+    password: ${password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -15,5 +15,6 @@ spring:
         format_sql: true
 
 jwt:
-  secret:
-  expiration: 6000000000000
+  # kube 할 때 env에 넣어서 실행하기
+  secret: ${secret}
+  expiration: ${exp}
