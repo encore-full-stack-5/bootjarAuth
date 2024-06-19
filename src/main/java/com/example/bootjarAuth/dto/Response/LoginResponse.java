@@ -1,11 +1,17 @@
 package com.example.bootjarAuth.dto.Response;
 
-public record LoginResponse (
-        String token,
-        String tokenType,
-        String message
-){
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class LoginResponse {
+       private String token;
+       private String tokenType;
+
     public static LoginResponse from(String token){
-        return new LoginResponse(token, "Bearer", "로그인 성공");
+        return new LoginResponse(token, "jwt");
     }
 }

@@ -1,6 +1,5 @@
 package com.example.bootjarAuth.service;
 
-import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
