@@ -6,14 +6,17 @@ import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +81,10 @@ public class AuthServiceImpl implements AuthService {
         }
         user.setImage(imageUrl);
 
+    }
+
+    @Override
+    public List<SearchResponse> searchUser(String nickname) {
+       return authRepository.findByNicknameContaining(nickname).stream().map(SearchResponse::from).toList();
     }
 }

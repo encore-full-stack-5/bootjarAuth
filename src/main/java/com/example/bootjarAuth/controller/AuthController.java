@@ -4,6 +4,7 @@ import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -55,5 +56,9 @@ public class AuthController {
         authService.updateUser(bearerToken,updateDto);
 
         return ResponseEntity.ok("수정 성공");
+    }
+    @GetMapping("/search")
+    public List<SearchResponse> searchUser(@RequestParam("nickname") String nickname){
+        return authService.searchUser(nickname);
     }
 }
