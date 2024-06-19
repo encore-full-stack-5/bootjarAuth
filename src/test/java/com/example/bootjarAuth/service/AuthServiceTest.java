@@ -2,9 +2,9 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
+import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
-import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -94,7 +96,7 @@ class AuthServiceTest {
                 .email("email@example.com")
                 .password("encodedPassword")
                 .build();
-        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(validUser));
+        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(validUser);
         when(passwordEncoder.matches(loginRequest.getPassword(), validUser.getPassword())).thenReturn(true);
         when(jwtUtil.generateToken(loginRequest.getEmail())).thenReturn("validToken");
             // when
@@ -110,7 +112,7 @@ class AuthServiceTest {
                 .email("email@example.com")
                 .password("encodedPassword")
                 .build();
-        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.empty());
+        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(null);
         // when
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> authServiceImpl.login(loginRequest));
         // then
@@ -125,7 +127,7 @@ class AuthServiceTest {
                 .email("email@example.com")
                 .password("encodedPassword")
                 .build();
-        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(validUser));
+        when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(validUser);
         when(passwordEncoder.matches(loginRequest.getPassword(), validUser.getPassword())).thenReturn(false);
         // when
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> authServiceImpl.login(loginRequest));

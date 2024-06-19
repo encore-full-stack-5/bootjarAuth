@@ -6,6 +6,8 @@ import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 
+import java.io.IOException;
+
 public interface AuthService {
 
     void signUp(SignUpRequest signUpRequest);
@@ -16,5 +18,5 @@ public interface AuthService {
 
     void deleteUser(UserDto userDto);
 
-    void updateUser(UpdateDto updateDto);
+    void updateUser(String bearerToken, UpdateDto updateDto) throws IOException;
 }

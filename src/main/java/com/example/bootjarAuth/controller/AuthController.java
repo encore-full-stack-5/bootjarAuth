@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/users")
@@ -44,8 +47,12 @@ public class AuthController {
 
 
     @PutMapping("/me")
-    public ResponseEntity<String> updateUser(@RequestBody UpdateDto updateDto){
-        authService.updateUser(updateDto);
+    public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
+                                             @Validated @ModelAttribute UpdateDto updateDto) throws IOException {
+
+        String bearerToken = token.substring(7);
+        authService.updateUser(bearerToken,updateDto);
+
         return ResponseEntity.ok("수정 성공");
     }
 }
