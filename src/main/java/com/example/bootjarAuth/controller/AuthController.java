@@ -7,6 +7,8 @@ import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.service.AuthService;
+import com.google.zxing.WriterException;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +49,6 @@ public class AuthController {
         return authService.getUser(bearerToken);
     }
 
-
     @PutMapping("/me")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
                                              @Validated @ModelAttribute UpdateDto updateDto) throws IOException {
@@ -56,6 +57,15 @@ public class AuthController {
         authService.updateUser(bearerToken,updateDto);
 
         return ResponseEntity.ok("수정 성공");
+    }
+
+    // qrCode
+    @PostMapping("/qrcode")
+    public void sendQRCodeEmail(@RequestBody EmailDto emailDto) throws IOException, WriterException, MessagingException {
+        // QR코드 생성
+        byte[] qrCode = authService.generateQRCodeImage(emailDto.getChangePasswordUrl());
+        // 이메일 및 QR코드 전송
+        authService.sendEmail(emailDto.getAddress(), qrCode);
     }
     @GetMapping("/search")
     public List<SearchResponse> searchUser(@RequestParam("nickname") String nickname){

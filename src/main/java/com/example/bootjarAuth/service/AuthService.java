@@ -6,6 +6,8 @@ import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
+import com.google.zxing.WriterException;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
@@ -24,4 +26,9 @@ public interface AuthService {
     void updateUser(String bearerToken, UpdateDto updateDto) throws IOException;
 
     List<SearchResponse> searchUser(String nickname);
+
+    // QR Code
+    byte[] generateQRCodeImage(String changePasswordUrl) throws WriterException, IOException;
+    // Email
+    void sendEmail(String address, byte[] qrCode) throws IOException, MessagingException;
 }
