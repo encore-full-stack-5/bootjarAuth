@@ -20,9 +20,22 @@ spring:
           location: ${location}
       project-id: ${project-id}
       bucket: ${bucketName}
-
+  # mailService
+  mail:
+    host: smtp.gmail.com
+    port: 587 # TLS 사용
+    username: ${gmail-id}
+    password: ${gmail-pw}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        mime:
+          charset: UTF-8
+    default-encoding: UTF-8
 
 jwt:
-  # kube 할 때 env에 넣어서 실행하기
   secret: ${secret}
   expiration: ${exp}
