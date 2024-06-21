@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class TokenResponse {
        private String token;
        private String tokenType;
 
-    public static LoginResponse from(String token){
-        return new LoginResponse(token, "jwt");
+    public static TokenResponse from(String token){
+        return new TokenResponse(token, "jwt");
     }
 }

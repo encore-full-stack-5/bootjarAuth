@@ -1,7 +1,5 @@
 package com.example.bootjarAuth.global.utils;
 
-import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.Response.UserResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -9,8 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -26,15 +22,26 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(Long id, String email){
+    public String generateToken(Long id, String email, String image){
         return Jwts.builder()
                 .subject(email)
                 .claim("email", email)
                 .claim("id", id)
+                .claim("image", image)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
                 .compact();
     }
+
+    public String generateQRToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("email", email)
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(secretKey)
+                .compact();
+    }
+
     public String getByEmailFromTokenAndValidate(String token){
         Claims payload = (Claims) Jwts.parser()
                 .verifyWith(secretKey)

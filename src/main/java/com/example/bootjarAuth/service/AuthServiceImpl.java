@@ -5,7 +5,7 @@ import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
-import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
@@ -22,7 +22,6 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,14 +58,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
         User byEmail = authRepository.findByEmail(loginRequest.getEmail());
         if(byEmail == null ||
                 !passwordEncoder.matches(loginRequest.getPassword(), byEmail.getPassword()))
             throw new IllegalArgumentException("Email 혹은 비밀번호가 틀렸습니다.");
 
-        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail());
-        return LoginResponse.from(token);
+        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail(), byEmail.getImage());
+        return TokenResponse.from(token);
     }
 
     @Override
@@ -109,11 +108,16 @@ public class AuthServiceImpl implements AuthService {
 
     // QR Code
     @Override
-    public byte[] generateQRCodeImage(String changePasswordUrl) throws WriterException, IOException {
+    public TokenResponse generateQRToken(String email) {
+        String token = jwtUtil.generateQRToken(email);
+        return TokenResponse.from(token);
+    }
+    @Override
+    public byte[] generateQRCodeImage(String email, String changePasswordUrl) throws WriterException, IOException {
         Map<EncodeHintType, Object> hints = new HashMap<>(); // 코드 설정 지정
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8"); // UTF-8로 인코딩
-        // 오류 정정 레벨을 낮은 수준으로 지정 (높을 수록 QR코드 내부 데이터 보구 능력이 강화됨
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+        // 오류 정정 레벨을 낮은 수준으로 지정 (높을 수록 QR코드 내부 데이터 복구 능력이 강화됨)
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
         hints.put(EncodeHintType.MARGIN, 1); // QR코드 주변의 여백
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
