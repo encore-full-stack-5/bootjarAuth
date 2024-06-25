@@ -2,11 +2,16 @@ package com.example.bootjarAuth.controller;
 
 import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
+import com.example.bootjarAuth.dto.Request.QRTokenRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
-import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.service.AuthService;
+import com.example.bootjarAuth.service.EmailService;
+import com.example.bootjarAuth.service.QRCodeService;
+import com.google.zxing.WriterException;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final QRCodeService qrCodeService;
+    private final EmailService emailService;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(
@@ -30,9 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest loginRequest){
         return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
-
     }
 
     @DeleteMapping("/me")
@@ -47,18 +53,31 @@ public class AuthController {
         return authService.getUser(bearerToken);
     }
 
-
     @PutMapping("/me")
     public ResponseEntity<String> updateUser(@RequestHeader("Authorization") String token,
                                              @Validated @ModelAttribute UpdateDto updateDto) throws IOException {
-
         String bearerToken = token.substring(7);
         authService.updateUser(bearerToken,updateDto);
 
         return ResponseEntity.ok("수정 성공");
     }
+
     @GetMapping("/search")
     public List<SearchResponse> searchUser(@RequestParam("nickname") String nickname){
         return authService.searchUser(nickname);
+    }
+
+    @PostMapping("/qrcode/token")
+    public ResponseEntity<TokenResponse> generateQRToken(@RequestBody QRTokenRequest qrTokenRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.generateQRToken(qrTokenRequest.getEmail()));
+    }
+
+    // qrCode
+    @PostMapping("/qrcode")
+    public void sendQRCodeEmail(@RequestBody EmailDto emailDto) throws IOException, WriterException, MessagingException {
+        // QR코드 생성
+        byte[] qrCode = qrCodeService.generateQRCodeImage(emailDto.getAddress(), emailDto.getChangePasswordUrl());
+        // 이메일 및 QR코드 전송
+        emailService.sendEmail(emailDto.getAddress(), qrCode);
     }
 }

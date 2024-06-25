@@ -2,7 +2,7 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.Response.LoginResponse;
+import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.global.utils.JwtUtil;
@@ -15,9 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-import java.util.Optional;
-
-import static java.util.Optional.empty;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -89,21 +86,23 @@ class AuthServiceTest {
 
     }
     @Test
-        void 로그인_성공 () {
-            // given
+    void 로그인_성공 () {
+        // given
         LoginRequest loginRequest = new LoginRequest("email@example.com", "password");
         User validUser = User.builder()
                 .email("email@example.com")
+                .id(1L)
+                .image("image")
                 .password("encodedPassword")
                 .build();
         when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(validUser);
         when(passwordEncoder.matches(loginRequest.getPassword(), validUser.getPassword())).thenReturn(true);
-        when(jwtUtil.generateToken(loginRequest.getEmail())).thenReturn("validToken");
-            // when
-        LoginResponse loginResponse = authServiceImpl.login(loginRequest);
-            // then
-        assertThat(loginResponse.getToken()).isEqualTo("validToken");
-        }
+        when(jwtUtil.generateToken(1L, loginRequest.getEmail(), "image")).thenReturn("validToken");
+        // when
+        TokenResponse tokenResponse = authServiceImpl.login(loginRequest);
+        // then
+        assertThat(tokenResponse.getToken()).isEqualTo("validToken");
+    }
     @Test
     void 로그인_실패_이메일 () {
         // given

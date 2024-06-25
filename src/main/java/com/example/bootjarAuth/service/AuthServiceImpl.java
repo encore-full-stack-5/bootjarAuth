@@ -2,16 +2,15 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.*;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
-import com.example.bootjarAuth.dto.Response.LoginResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
+import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
+import com.example.bootjarAuth.dto.UpdateDto;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,14 +39,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse login(LoginRequest loginRequest) {
+    public TokenResponse login(LoginRequest loginRequest) {
         User byEmail = authRepository.findByEmail(loginRequest.getEmail());
         if(byEmail == null ||
                 !passwordEncoder.matches(loginRequest.getPassword(), byEmail.getPassword()))
             throw new IllegalArgumentException("Email 혹은 비밀번호가 틀렸습니다.");
 
-        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail());
-        return LoginResponse.from(token);
+        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail(), byEmail.getImage());
+        return TokenResponse.from(token);
     }
 
     @Override
