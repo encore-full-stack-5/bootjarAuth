@@ -25,10 +25,4 @@ public interface AuthService {
     void updateUser(String bearerToken, UpdateDto updateDto) throws IOException;
 
     List<SearchResponse> searchUser(String nickname);
-
-    // QR Code
-    TokenResponse generateQRToken(String email);
-    byte[] generateQRCodeImage(String email, String changePasswordUrl) throws WriterException, IOException;
-    // Email
-    void sendEmail(String address, byte[] qrCode) throws IOException, MessagingException;
 }

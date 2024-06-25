@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final GcsService gcsService;
-    private final JavaMailSender emailSender;
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
@@ -104,48 +103,5 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public List<SearchResponse> searchUser(String nickname) {
        return authRepository.findByNicknameContaining(nickname).stream().map(SearchResponse::from).toList();
-    }
-
-    // QR Code
-    @Override
-    public TokenResponse generateQRToken(String email) {
-        String token = jwtUtil.generateQRToken(email);
-        return TokenResponse.from(token);
-    }
-    @Override
-    public byte[] generateQRCodeImage(String email, String changePasswordUrl) throws WriterException, IOException {
-        Map<EncodeHintType, Object> hints = new HashMap<>(); // 코드 설정 지정
-        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8"); // UTF-8로 인코딩
-        // 오류 정정 레벨을 낮은 수준으로 지정 (높을 수록 QR코드 내부 데이터 복구 능력이 강화됨)
-        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
-        hints.put(EncodeHintType.MARGIN, 1); // QR코드 주변의 여백
-
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        // (url, 바코드 형식.QR_CODE, 코드 너비, 코드 높이, hints)
-        BitMatrix bitMatrix = qrCodeWriter.encode(changePasswordUrl, BarcodeFormat.QR_CODE, 300, 300, hints);
-
-        BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix); // 이미지로 변환
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(); // byte배열로 반환
-        ImageIO.write(image, "png", baos); // (이미지, 포맷, 출력)
-        return baos.toByteArray();
-    }
-
-    // Email
-    @Override
-    public void sendEmail(String address, byte[] qrCode) throws IOException, MessagingException {
-        MimeMessage message = emailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        // 보내는 이
-        helper.setFrom(String.valueOf(new InternetAddress("parkmyurm@gmail.com", "YOU&I✨TODO")));
-        // 받는 이
-        helper.setTo(address);
-        // 제목
-        helper.setSubject("[YOU&I TODO] 비밀번호 변경 QR코드 입니다.");
-        // 내용
-        helper.setText("QR코드로 접속 후 비밀번호를 변경해 주세요.\n(5분 뒤 만료됩니다.)");
-        // QR Code
-        helper.addAttachment("QRCode.png", new ByteArrayResource(qrCode), "image/png");
-
-        emailSender.send(message);
     }
 }
