@@ -8,6 +8,8 @@ import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.service.AuthService;
+import com.example.bootjarAuth.service.EmailService;
+import com.example.bootjarAuth.service.QRCodeService;
 import com.google.zxing.WriterException;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final QRCodeService qrCodeService;
+    private final EmailService emailService;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(
@@ -65,15 +69,15 @@ public class AuthController {
 
     @PostMapping("/qrcode/token")
     public ResponseEntity<TokenResponse> generateQRToken(@RequestBody QRTokenRequest qrTokenRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.generateQRToken(qrTokenRequest.getEmail()));
+        return ResponseEntity.status(HttpStatus.OK).body(qrCodeService.generateQRToken(qrTokenRequest.getEmail()));
     }
 
     // qrCode
     @PostMapping("/qrcode")
     public void sendQRCodeEmail(@RequestBody EmailDto emailDto) throws IOException, WriterException, MessagingException {
         // QR코드 생성
-        byte[] qrCode = authService.generateQRCodeImage(emailDto.getAddress(), emailDto.getChangePasswordUrl());
+        byte[] qrCode = qrCodeService.generateQRCodeImage(emailDto.getAddress(), emailDto.getChangePasswordUrl());
         // 이메일 및 QR코드 전송
-        authService.sendEmail(emailDto.getAddress(), qrCode);
+        emailService.sendEmail(emailDto.getAddress(), qrCode);
     }
 }
