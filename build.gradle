@@ -47,6 +47,8 @@ dependencies {
 	//GCS
 	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.8.RELEASE'
 
+	//actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
