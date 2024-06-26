@@ -45,7 +45,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	//GCS
-	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.8.RELEASE'
+	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.5.RELEASE'
 
 	//actuator
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
