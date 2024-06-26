@@ -2,7 +2,7 @@ spring:
   application:
     name: bootjarAuth
   datasource:
-    url: jdbc:mysql://server-mysql:3306/users
+    url: jdbc:mysql://bootjar-mysql:3306/bootjar_user
     username: ${username}
     password: ${password}
     driver-class-name: com.mysql.cj.jdbc.Driver
