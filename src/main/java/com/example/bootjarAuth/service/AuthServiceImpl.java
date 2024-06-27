@@ -79,9 +79,11 @@ public class AuthServiceImpl implements AuthService {
             user.setImage(user.getImage());
         }
 
-        user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
-        user.setNickname(updateDto.getNickname());
-        user.setPublicScope(updateDto.getUserPublicScope());
+        if (updateDto.getPassword() != null) user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+
+        if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
+
+        if (updateDto.getUserPublicScope() != null) user.setPublicScope(updateDto.getUserPublicScope());
 
     }
 
