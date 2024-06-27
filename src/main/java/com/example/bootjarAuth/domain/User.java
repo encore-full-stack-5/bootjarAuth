@@ -34,6 +34,7 @@ public class User {
     @Setter
     private String image;
 
+    @Setter
     @Column(name = "user_public_scope", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean publicScope;
 
