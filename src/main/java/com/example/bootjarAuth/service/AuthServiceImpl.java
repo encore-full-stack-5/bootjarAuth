@@ -71,11 +71,15 @@ public class AuthServiceImpl implements AuthService {
         User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
         if(user == null) throw  new IllegalArgumentException("해당하는 회원이 없습니다");
 
-        String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
 
+        if (updateDto.getImage() != null && !updateDto.getImage().isEmpty()) {
+            String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
+            user.setImage(imageUrl);
+        } else {
+            user.setImage(user.getImage());
+        }
 
-        if (updateDto.getPassword() != null) user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
-        user.setImage(imageUrl);
+        user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         user.setNickname(updateDto.getNickname());
         user.setPublicScope(updateDto.getUserPublicScope());
 

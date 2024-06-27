@@ -31,7 +31,7 @@ public class GcsService {
       return blobInfo.getMediaLink();
     }
 //파일 확장자 검증
-    private String getFileExtension(String fileName) {
+    public String getFileExtension(String fileName) {
         int dotIndex = fileName.lastIndexOf(".");
         if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
             throw new IllegalArgumentException("올바르지 못한 확장자입니다");
