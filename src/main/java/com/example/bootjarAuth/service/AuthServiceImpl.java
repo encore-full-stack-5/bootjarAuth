@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
     public void updateUser(String token, UpdateDto updateDto) throws IOException {
 
         User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
-        if(user == null) throw  new IllegalArgumentException("해당하는 회원이 없습니다");
+        if(user == null) throw  new IllegalArgumentException("존재하지 않는 회원입니다.");
 
 
         if (updateDto.getImage() != null && !updateDto.getImage().isEmpty()) {

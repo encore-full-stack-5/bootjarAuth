@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class SearchResponse {
     private Long userId;
     private String nickname;
+    private String image;
     private Boolean userPublicScope;
 
 
@@ -21,6 +22,7 @@ public class SearchResponse {
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .userPublicScope(user.getPublicScope())
+                .image(user.getImage())
                 .build();
     }
 }
