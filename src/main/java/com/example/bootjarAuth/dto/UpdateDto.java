@@ -21,4 +21,6 @@ public class UpdateDto {
             , message = "비밀번호는 영어와 숫자 , 특수문자를 포함해서 8자리 이상으로 입력해주세요.")
     private String password;
 
+    private Boolean userPublicScope;
+
 }
