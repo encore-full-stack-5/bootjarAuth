@@ -1,5 +1,6 @@
 package com.example.bootjarAuth.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class UpdateDto {
 
     private MultipartFile image;
 
+    @NotBlank(message = "공백으로는 입력이 불가능 합니다")
     private String nickname;
 
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$"
@@ -22,5 +24,4 @@ public class UpdateDto {
     private String password;
 
     private Boolean userPublicScope;
-
 }
