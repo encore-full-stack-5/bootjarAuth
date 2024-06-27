@@ -16,7 +16,6 @@ public class UpdateDto {
 
     private MultipartFile image;
 
-    @NotBlank(message = "공백으로는 입력이 불가능 합니다")
     private String nickname;
 
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$"
