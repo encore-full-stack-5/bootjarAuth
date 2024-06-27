@@ -4,8 +4,8 @@ import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
-import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.TokenResponse;
+import com.example.bootjarAuth.dto.Response.SearchResponse;
 import com.example.bootjarAuth.dto.Response.UserResponse;
 import com.example.bootjarAuth.dto.UpdateDto;
 import com.example.bootjarAuth.global.utils.JwtUtil;
@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
                 !passwordEncoder.matches(loginRequest.getPassword(), byEmail.getPassword()))
             throw new IllegalArgumentException("Email 혹은 비밀번호가 틀렸습니다.");
 
-        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail(), byEmail.getImage());
+        String token = jwtUtil.generateToken(byEmail.getId(), loginRequest.getEmail(), byEmail.getNickname(), byEmail.getImage());
         return TokenResponse.from(token);
     }
 
