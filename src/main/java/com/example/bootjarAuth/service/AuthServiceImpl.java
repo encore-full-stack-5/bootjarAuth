@@ -74,11 +74,10 @@ public class AuthServiceImpl implements AuthService {
         String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
 
 
-        user.setNickname(updateDto.getNickname());
-        if (updateDto.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
-        }
+        if (updateDto.getPassword() != null) user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
         user.setImage(imageUrl);
+        user.setNickname(updateDto.getNickname());
+        user.setPublicScope(updateDto.getUserPublicScope());
 
     }
 
