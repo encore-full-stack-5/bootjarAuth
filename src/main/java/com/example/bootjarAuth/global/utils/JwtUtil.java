@@ -22,11 +22,12 @@ public class JwtUtil {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(Long id, String email, String image){
+    public String generateToken(Long id, String email, String nickname, String image){
         return Jwts.builder()
                 .subject(email)
                 .claim("email", email)
                 .claim("id", id)
+                .claim("nickname",nickname)
                 .claim("image", image)
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)
