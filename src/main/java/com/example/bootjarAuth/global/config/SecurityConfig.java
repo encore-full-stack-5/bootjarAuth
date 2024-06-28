@@ -1,7 +1,6 @@
 package com.example.bootjarAuth.global.config;
 
 import com.example.bootjarAuth.global.utils.JwtAuthenticationFilter;
-import com.example.bootjarAuth.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

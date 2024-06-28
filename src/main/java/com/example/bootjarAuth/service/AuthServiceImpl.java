@@ -5,17 +5,13 @@ import com.example.bootjarAuth.domain.User;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.TokenResponse;
-import com.example.bootjarAuth.dto.Response.SearchResponse;
-import com.example.bootjarAuth.dto.Response.UserResponse;
-import com.example.bootjarAuth.dto.UpdateDto;
+import com.example.bootjarAuth.dto.Response.UserInfoResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +19,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthRepository authRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final GcsService gcsService;
+    private final RestTemplate restTemplate;
+
 
     @Override
     public void signUp(SignUpRequest signUpRequest) {
@@ -35,7 +32,10 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("중복된 닉네임입니다.");
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
-        authRepository.save(signUpRequest.toEntity(encodedPassword));
+        User saveuser = authRepository.save(signUpRequest.toEntity(encodedPassword));
+
+        sendSaveUserInfo(saveuser);
+
     }
 
     @Override
@@ -49,46 +49,55 @@ public class AuthServiceImpl implements AuthService {
         return TokenResponse.from(token);
     }
 
-    @Override
-    public UserResponse getUser(String token) {
-
-        User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
-        if(user == null) throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-
-        return  UserResponse.from(user);
-    }
-
-    @Transactional
-    @Override
-    public void deleteUser(String token) {
-        authRepository.deleteByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
-    }
-
-    @Transactional
-    @Override
-    public void updateUser(String token, UpdateDto updateDto) throws IOException {
-
-        User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
-        if(user == null) throw  new IllegalArgumentException("존재하지 않는 회원입니다.");
 
 
-        if (updateDto.getImage() != null && !updateDto.getImage().isEmpty()) {
-            String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
-            user.setImage(imageUrl);
-        } else {
-            user.setImage(user.getImage());
-        }
+    public void sendSaveUserInfo(User savedUser) {
+        sendUserInfoToFriendsService(createUserInfoResponse(savedUser));
 
-        if (updateDto.getPassword() != null) user.setPassword(passwordEncoder.encode(updateDto.getPassword()));
+        sendUserInfoToTodosService(TodoCreateUserInfo(savedUser));
 
-        if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
+        sendUserInfoToCommentsService(createUserInfoResponse(savedUser));
 
-        if (updateDto.getUserPublicScope() != null) user.setPublicScope(updateDto.getUserPublicScope());
 
     }
 
-    @Override
-    public List<SearchResponse> searchUser(String nickname) {
-       return authRepository.findByNicknameContaining(nickname).stream().map(SearchResponse::from).toList();
+    public void sendUserInfoToTodosService(UserInfoResponse userInfoResponse) {
+        restTemplate.postForEntity(
+                "http://35.238.87.27/todos/user-signup",
+                userInfoResponse,
+                UserInfoResponse.class
+        );
     }
+
+    public void sendUserInfoToFriendsService(UserInfoResponse userInfoResponse) {
+        restTemplate.postForEntity(
+                "http://34.173.194.250/friends/user-signup",
+                userInfoResponse,
+                UserInfoResponse.class
+        );
+    }
+
+    public void sendUserInfoToCommentsService(UserInfoResponse userInfoResponse) {
+        restTemplate.postForEntity(
+                "http://34.31.174.33/todos/comments/user-signup",
+                userInfoResponse,
+                UserInfoResponse.class
+        );
+    }
+
+    public UserInfoResponse TodoCreateUserInfo(User user) {
+        return UserInfoResponse.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .publicScope(user.getPublicScope())
+                .build();
+    }
+
+    public UserInfoResponse createUserInfoResponse(User user) {
+        return UserInfoResponse.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .build();
+    }
+
 }
