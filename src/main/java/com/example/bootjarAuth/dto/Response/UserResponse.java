@@ -13,12 +13,14 @@ public class UserResponse {
     private String email;
     private String nickname;
     private Boolean userPublicScope;
+    private String image;
 
     public static UserResponse from(User user){
       return UserResponse.builder()
               .email(user.getEmail())
               .nickname(user.getNickname())
               .userPublicScope(user.getPublicScope())
+              .image(user.getImage())
               .build();
     }
 }
