@@ -10,14 +10,17 @@ import com.example.bootjarAuth.dto.UpdateDto;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -32,6 +35,8 @@ public class UserServiceImpl implements UserService {
 
         User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
         if(user == null) throw new IllegalArgumentException("존재하지 않는 회원입니다.");
+
+        log.info("image = " + user.getImage());
 
         return  UserResponse.from(user);
     }
