@@ -33,7 +33,7 @@ public class SignUpRequest {
                 .email(email)
                 .password(encodedPassword)
                 .nickname(nickname)
-                .publicScope(userPublicScope != null ? userPublicScope : false)
+                .publicScope(userPublicScope != null ? userPublicScope : true)
                 .build();
     }
 }
