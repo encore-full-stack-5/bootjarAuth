@@ -18,11 +18,5 @@ public interface AuthService {
 
     TokenResponse login(LoginRequest loginRequest);
 
-    UserResponse getUser(String token);
 
-    void deleteUser(String token);
-
-    void updateUser(String bearerToken, UpdateDto updateDto) throws IOException;
-
-    List<SearchResponse> searchUser(String nickname);
 }

@@ -2,9 +2,9 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
-import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
+import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,15 +14,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
+class AuthServiceImplTest {
     @InjectMocks
     private AuthServiceImpl authServiceImpl;
+
     @Mock
     private AuthRepository authRepository;
     @Mock
@@ -91,13 +91,14 @@ class AuthServiceTest {
         LoginRequest loginRequest = new LoginRequest("email@example.com", "password");
         User validUser = User.builder()
                 .email("email@example.com")
+                .nickname("nickname")
                 .id(1L)
                 .image("image")
                 .password("encodedPassword")
                 .build();
         when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(validUser);
         when(passwordEncoder.matches(loginRequest.getPassword(), validUser.getPassword())).thenReturn(true);
-        when(jwtUtil.generateToken(1L, loginRequest.getEmail(), "image")).thenReturn("validToken");
+        when(jwtUtil.generateToken(1L, loginRequest.getEmail(),"nickname", "image")).thenReturn("validToken");
         // when
         TokenResponse tokenResponse = authServiceImpl.login(loginRequest);
         // then
@@ -107,10 +108,6 @@ class AuthServiceTest {
     void 로그인_실패_이메일 () {
         // given
         LoginRequest loginRequest = new LoginRequest("email@example.com", "password");
-        User validUser = User.builder()
-                .email("email@example.com")
-                .password("encodedPassword")
-                .build();
         when(authRepository.findByEmail(loginRequest.getEmail())).thenReturn(null);
         // when
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> authServiceImpl.login(loginRequest));
@@ -133,4 +130,8 @@ class AuthServiceTest {
         // then
         assertThat(exception.getMessage()).isEqualTo("Email 혹은 비밀번호가 틀렸습니다.");
     }
+
+
+
+
 }
