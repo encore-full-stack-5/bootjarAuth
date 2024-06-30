@@ -1,6 +1,7 @@
 package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.dto.*;
+import com.example.bootjarAuth.dto.Request.ChangePasswordRequest;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.TokenResponse;
@@ -19,4 +20,5 @@ public interface AuthService {
     TokenResponse login(LoginRequest loginRequest);
 
 
+    void changePassword(ChangePasswordRequest changePasswordRequest);
 }

@@ -1,6 +1,7 @@
 package com.example.bootjarAuth.controller;
 
 import com.example.bootjarAuth.dto.*;
+import com.example.bootjarAuth.dto.Request.ChangePasswordRequest;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.QRTokenRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
@@ -55,5 +56,12 @@ public class AuthController {
         byte[] qrCode = qrCodeService.generateQRCodeImage(emailDto.getAddress(), emailDto.getChangePasswordUrl());
         // 이메일 및 QR코드 전송
         emailService.sendEmail(emailDto.getAddress(), qrCode);
+    }
+
+    @PostMapping("/change/password")
+    public void changePassword(@RequestBody @Validated ChangePasswordRequest changePasswordRequest){
+
+
+    authService.changePassword(changePasswordRequest);
     }
 }
