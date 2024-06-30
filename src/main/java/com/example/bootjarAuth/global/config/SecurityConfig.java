@@ -47,7 +47,7 @@ public class SecurityConfig {
             return corsConfiguration;
         }));
         http.authorizeHttpRequests(auth ->
-                auth.requestMatchers("/actuator/**","/users/login", "/users/qrcode/**", "/users/signup","/api/gcs/**","/users/search/**")
+                auth.requestMatchers("/actuator/**","/users/login", "/users/qrcode/**", "/users/signup","/api/gcs/**","/users/search/**","/users/change/password")
                         .permitAll()
                         .anyRequest()
                         .authenticated()
