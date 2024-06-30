@@ -2,11 +2,13 @@ package com.example.bootjarAuth.service;
 
 import com.example.bootjarAuth.domain.AuthRepository;
 import com.example.bootjarAuth.domain.User;
+import com.example.bootjarAuth.dto.Request.ChangePasswordRequest;
 import com.example.bootjarAuth.dto.Request.LoginRequest;
 import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.UserInfoResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,18 @@ public class AuthServiceImpl implements AuthService {
         return TokenResponse.from(token);
     }
 
+    @Override
+    @Transactional
+    public void changePassword(ChangePasswordRequest changePasswordRequest) {
+       String email = jwtUtil.getByEmailFromTokenAndValidate(changePasswordRequest.getQrToken());
+
+        User user = authRepository.findByEmail(email);
+
+        if(user == null) throw new IllegalArgumentException("잘못된 URL 입니다.");
+
+        user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+
+    }
 
 
     public void sendSaveUserInfo(User savedUser) {
