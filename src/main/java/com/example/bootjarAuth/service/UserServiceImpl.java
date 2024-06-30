@@ -61,6 +61,8 @@ public class UserServiceImpl implements UserService {
         User user = authRepository.findByEmail(jwtUtil.getByEmailFromTokenAndValidate(token));
         if(user == null) throw  new IllegalArgumentException("존재하지 않는 회원입니다.");
 
+        if(user.getNickname().equals(updateDto.getNickname())) throw  new IllegalArgumentException("중복된 이메일입니다.");
+
 
         if (updateDto.getImage() != null && !updateDto.getImage().isEmpty()) {
             String imageUrl = gcsService.uploadFile(updateDto.getImage().getOriginalFilename(), updateDto.getImage().getBytes());
