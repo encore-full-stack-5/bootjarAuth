@@ -8,6 +8,7 @@ import com.example.bootjarAuth.dto.Request.SignUpRequest;
 import com.example.bootjarAuth.dto.Response.TokenResponse;
 import com.example.bootjarAuth.dto.Response.UserInfoResponse;
 import com.example.bootjarAuth.global.utils.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,14 +55,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
-       String email = jwtUtil.getByEmailFromTokenAndValidate(changePasswordRequest.getQrToken());
-
-        User user = authRepository.findByEmail(email);
-
-        if(user == null) throw new IllegalArgumentException("잘못된 URL 입니다.");
-
-        user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
-
+        try {
+            String email = jwtUtil.getByEmailFromTokenAndValidate(changePasswordRequest.getQrToken());
+            User user = authRepository.findByEmail(email);
+            user.setPassword(passwordEncoder.encode(changePasswordRequest.getPassword()));
+        } catch (ExpiredJwtException error) {
+            throw new IllegalArgumentException("만료된 URL입니다.");
+        }
     }
 
 
