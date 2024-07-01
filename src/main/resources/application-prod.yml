@@ -39,3 +39,5 @@ spring:
 jwt:
   secret: ${secret}
   expiration: ${exp}
+qrJwt:
+  expiration: 300000

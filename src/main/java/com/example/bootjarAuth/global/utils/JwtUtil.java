@@ -13,13 +13,16 @@ import java.util.Date;
 public class JwtUtil {
     private final Long expiration;
     private final SecretKey secretKey;
+    private final Long qrExpiration;
 
     public JwtUtil(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration}") Long expiration
+            @Value("${jwt.expiration}") Long expiration,
+            @Value("${qrJwt.expiration}") Long qrExpiration
     ) {
         this.expiration = expiration;
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.qrExpiration = qrExpiration;
     }
 
     public String generateToken(Long id, String email, String nickname, String image){
@@ -38,7 +41,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .subject(email)
                 .claim("email", email)
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + qrExpiration))
                 .signWith(secretKey)
                 .compact();
     }
